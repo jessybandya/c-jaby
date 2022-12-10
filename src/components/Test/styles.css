@@ -1,0 +1,17 @@
+.content-sm-space .tophive-container #main, .content-sm-space .tophive-container #sidebar-primary, .content-sm-space .tophive-container #sidebar-secondary {
+    padding: 5vh 0;
+  }
+    @media screen and (max-width: 1024px){
+  .sidebar-content-sidebar #main {
+    border-left: 0 none;
+  }
+  .tophive-container #main {
+    position: relative;
+    width: 100%;
+  }
+}
+    @media screen and (max-width: 64em){
+  [class*="tophive-grid-"] > :not([class*="_md-0"]), [class*="tophive-grid_"] > :not([class*="_md-0"]), [class~="tophive-grid"] > :not([class*="_md-0"]) {
+    display: block;
+  }
+}

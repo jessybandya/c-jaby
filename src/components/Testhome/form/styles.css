@@ -1,0 +1,18 @@
+@media(max-width:991px) {
+    .postAdd{
+     width: 100%;
+     border: 2px solid #0A84FF;
+     padding: 8px;
+     border-radius: 15px;
+    }
+   }
+   
+   @media(min-width:991px) {
+    .postAdd{
+     width: 60%;
+     margin-left: 18%;
+     border: 2px solid #0A84FF;
+     padding: 8px;
+     border-radius: 15px;
+    }
+   }
