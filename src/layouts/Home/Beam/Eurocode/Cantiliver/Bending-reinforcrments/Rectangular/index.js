@@ -99,11 +99,9 @@ const ExpandMore = styled((props) => {
 }));
 
 function Rectangular({ d1, d2, fck, fyk, hCrossSection, bCrossSection, memberLength, name, link, cover, dLoad, mainBar }) {
-    var Med = (parseFloat(dLoad) * ((parseFloat(memberLength) ** 2) / 1000000)) / 8
+  // r1-> Compression r2-> Tension
+    var Med = (parseFloat(dLoad) * ((parseFloat(memberLength) ** 2) / 1000000)) / 2
     var Mrd = (0.167 * parseFloat(bCrossSection) * (parseFloat(d1) ** 2) * fck) / 1000000
-    const [As, setAs] = useState('')
-    const [As2, setAs2] = useState('')
-    const [AsMin, setAsMin] = useState('')
     const [modalShow, setModalShow] = React.useState(false);
     const [barSizeEconDoublyCompression, setBarSizeEconDoublyCompression]= useState(0)
     const [noOfBarsEconDoublyCompression, setNoOfBarsEconDoublyCompression]= useState(0)
@@ -160,8 +158,9 @@ function Rectangular({ d1, d2, fck, fyk, hCrossSection, bCrossSection, memberLen
            compresionDoubly.push(a)
           ))
      ))
+
      
-     compresionValues = compresionDoubly.filter(obj => +obj.area > (r2 < r3 ? r3 : r2) && 
+     compresionValues = compresionDoubly.filter(obj => +obj.area > (r1 < r3 ? r3 : r1) && 
       ((bCrossSection - (2 * cover) - (2 * link) - (+obj.no * +obj.barSize)) / (+obj.no - 1) >= 20)
       )
      compresionValues.sort((a, b) => a.area - b.area);
@@ -171,6 +170,7 @@ function Rectangular({ d1, d2, fck, fyk, hCrossSection, bCrossSection, memberLen
        setAreaEconDoublyCompression(compresionDoubly1[0].area)
        setNoOfBarsEconDoublyCompression(compresionDoubly1[0].no)
     });
+    console.log(compresionValues)
 
 
 
@@ -180,7 +180,7 @@ function Rectangular({ d1, d2, fck, fyk, hCrossSection, bCrossSection, memberLen
       ))
  ))
  
- tensionValues = tensionDoubly.filter(obj => +obj.area > (r1 < r3 ? r3 : r1) && 
+ tensionValues = tensionDoubly.filter(obj => +obj.area > (r2 < r3 ? r3 : r2) && 
   ((bCrossSection - (2 * cover) - (2 * link) - (+obj.no * +obj.barSize)) / (+obj.no - 1) >= 20)
   )
  tensionValues.sort((a, b) => a.area - b.area);
@@ -190,6 +190,8 @@ function Rectangular({ d1, d2, fck, fyk, hCrossSection, bCrossSection, memberLen
    setAreaEconDoublyTension(tensionDoubly1[0].area)
    setNoOfBarsEconDoublyTension(tensionDoubly1[0].no)
 });
+console.log('dat3:',tensionValues)
+
     
           }else{
 
@@ -223,7 +225,7 @@ function Rectangular({ d1, d2, fck, fyk, hCrossSection, bCrossSection, memberLen
       ))
  ))
  
- tensionValuesSingly = tensionSingly.filter(obj => +obj.area > (r1 < r3 ? r3 : r1) && 
+ tensionValuesSingly = tensionSingly.filter(obj => +obj.area > (r2 < r3 ? r3 : r2) && 
   ((bCrossSection - (2 * cover) - (2 * link) - (+obj.no * +obj.barSize)) / (+obj.no - 1) >= 20)
   )
  tensionValuesSingly.sort((a, b) => a.area - b.area);
@@ -258,15 +260,15 @@ const openModal = () =>{
           var z = (0.82 * parseFloat(d1))
           r3 = ((0.13 / 100) * parseFloat(bCrossSection) * parseFloat(d1))
 
-             r2 = ((Med - Mrd) * 1000000) / (0.87 * (parseFloat(fyk) * parseFloat(d1-d2))) < r3 ? r3 : ((Med - Mrd) * 1000000) / (0.87 * (parseFloat(fyk) * parseFloat(d1-d2)))
-             r1 = (((Mrd * 1000000) / (0.87 * (parseFloat(fyk) * (z)))) + r2)
+             r1 = ((Med - Mrd) * 1000000) / (0.87 * (parseFloat(fyk) * parseFloat(d1-d2))) < r3 ? r3 : ((Med - Mrd) * 1000000) / (0.87 * (parseFloat(fyk) * parseFloat(d1-d2)))
+             r2 = (((Mrd * 1000000) / (0.87 * (parseFloat(fyk) * (z)))) + r1)
         }else{
           var k = ((Med * 1000000) / (parseFloat(bCrossSection) * (parseFloat(d1) ** 2) * parseFloat(fck))) < 0.167 ? ((Med * 1000000) / (parseFloat(bCrossSection) * (parseFloat(d1) ** 2) * parseFloat(fck))) : 0.167
           var rootValue = (0.25 - (0.882 * k))
           var z = ((0.5 + (Math.sqrt(rootValue))) * parseFloat(d1))
           var zFinal = z > (0.95 * parseFloat(d1)) ? (0.95 * parseFloat(d1)) : z
              r3 = ( 0.0013 * (parseFloat(bCrossSection) * parseFloat(d1)))
-             r1 = (Med * 1000000) / (0.87 * (parseFloat(fyk) * (zFinal))) < r3 ? r3 : (Med * 1000000) / (0.87 * (parseFloat(fyk) * (zFinal)))
+             r2 = (Med * 1000000) / (0.87 * (parseFloat(fyk) * (zFinal))) < r3 ? r3 : (Med * 1000000) / (0.87 * (parseFloat(fyk) * (zFinal)))
         }
 
   return (
@@ -650,24 +652,28 @@ Tension Reinforcement Area
           <TableRow style={{width:'100%'}}>
           <TableCell align="center" style={{minWidth:80,backgroundColor: "#49a3f1"}} colSpan={5}>
           <MDTypography style={{fontSize:15,fontWeight:'bold'}}>
-                Compression Reinforcements
+          Compression Reinforcements
           </MDTypography>
           </TableCell>
           <TableCell align="center" style={{minWidth:80,backgroundColor: "#49a3f1"}} colSpan={5}>
           <MDTypography style={{fontSize:15,fontWeight:'bold'}}>
-                Tension Reinforcements
+          Tension Reinforcements
           </MDTypography>
           </TableCell>
         </TableRow>
         <TableRow style={{width:'100%'}}>
         <TableCell align="center" style={{minWidth:80}} colSpan={5}>
         <MDTypography style={{fontSize:15,fontWeight:'bold'}}>
-             {noOfBarsEconDoublyCompression}T{barSizeEconDoublyCompression} ({areaEconDoublyCompression}mm^2)
+             {noOfBarsEconDoublyCompression}T{barSizeEconDoublyCompression} ({areaEconDoublyCompression}mm^2) {noOfBarsEconDoublyCompression === 0 && barSizeEconDoublyCompression === 0 && areaEconDoublyCompression === 0 &&(
+              <span>C-S sizing is needed</span>
+             )}
         </MDTypography>
         </TableCell>
         <TableCell align="center" style={{minWidth:80}} colSpan={4}>
         <MDTypography  style={{fontSize:15,fontWeight:'bold'}}>
-        {noOfBarsEconDoublyTension}T{barSizeEconDoublyTension} ({areaEconDoublyTension}mm^2)
+        {noOfBarsEconDoublyTension}T{barSizeEconDoublyTension} ({areaEconDoublyTension}mm^2) {noOfBarsEconDoublyTension === 0 && barSizeEconDoublyTension === 0 && areaEconDoublyTension === 0 &&(
+          <span>C-S sizing is needed</span>
+         )}
         </MDTypography>
         </TableCell>
       </TableRow>
@@ -709,7 +715,7 @@ Tension Reinforcement Area
           </TableCell>
           <TableCell align="center" style={{minWidth:80,backgroundColor: "#49a3f1"}} colSpan={5}>
           <MDTypography  style={{fontSize:15,fontWeight:'bold'}}>
-                Compression(Hangers)  
+          Compression Reinforcements
           </MDTypography>
           </TableCell>
         </TableRow>
@@ -717,12 +723,16 @@ Tension Reinforcement Area
         <TableRow style={{width:'100%'}}>
         <TableCell align="center" style={{minWidth:80}} colSpan={5}>
         <MDTypography style={{fontSize:15,fontWeight:'bold'}}>
-             {noOfBarsEconSinglyTension}T{barSizeEconSinglyTension} ({areaEconSinglyTension}mm^2)
+             {noOfBarsEconSinglyTension}T{barSizeEconSinglyTension} ({areaEconSinglyTension}mm^2) {noOfBarsEconSinglyTension=== 0 && barSizeEconSinglyTension=== 0 && areaEconSinglyTension=== 0 &&(
+              <span>C-S sizing is needed</span>
+             )}
         </MDTypography>
         </TableCell>
         <TableCell align="center" style={{minWidth:80}} colSpan={4}>
         <MDTypography  style={{fontSize:15,fontWeight:'bold'}}>
-        {noOfBarsEconSinglyCompression}T{barSizeEconSinglyCompression} ({areaEconSinglyCompression}mm^2)
+        {noOfBarsEconSinglyCompression}T{barSizeEconSinglyCompression} ({areaEconSinglyCompression}mm^2) {noOfBarsEconSinglyCompression === 0 && barSizeEconSinglyCompression === 0 && areaEconSinglyCompression === 0 &&(
+          <span>C-S sizing is needed</span>
+         )}
         </MDTypography>
         </TableCell>
       </TableRow>

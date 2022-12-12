@@ -19,18 +19,30 @@ import SimpleBeam from './Simple-beam/Bending-reinforcrments';
 import Card from "@mui/material/Card";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Cantiliver from './Cantiliver/Bending-reinforcrments'
+import SimpleBeamShear from './Simple-beam/Shear';
+
 
 function Eurocode({ beamFun }) {
   const [controller] = useMaterialUIController();
   const { sidenavColor } = controller;  
   const [simpleBending, setSimpleBending] = useState(false)
+  const [simpleShear, setSimpleShear] = useState(false)
+  const [cantiliverBending, setCantiliverBending] = useState(false)
   const titleRef = useRef()
 
   const [showSimple, setShowSimple] = useState(false);
+  const [showSimpleShear, setShowSimpleShear] = useState(false);
+  const [showCantiliver, setShowCantiliver] = useState(false);
+
 
   const handleSimpleClose = () => setShowSimple(false);
   const handleSimpleShow = () => setShowSimple(true);
+  const handleSimpleShearClose = () => setShowSimpleShear(false);
+  const handleCantiliverClose = () => setShowCantiliver(false);
+  const handleCantiliverShow = () => setShowCantiliver(true);
 
+  // Simple Beam
   const simpleBendingFun = () =>{
     handleSimpleClose()
     if(simpleBending === false){
@@ -40,6 +52,25 @@ function Eurocode({ beamFun }) {
     }
   }
 
+// Cantiliver
+  const cantiliverBendingFun = () =>{
+    handleCantiliverClose()
+    if(cantiliverBending === false){
+      setCantiliverBending(true)
+    }else{
+      setCantiliverBending(false)
+    }
+  }
+
+  // Simple beam shear
+  const simpleShearFun = () =>{
+    handleSimpleClose()
+    if(simpleShear === false){
+      setSimpleShear(true)
+    }else{
+      setSimpleShear(false)
+    }
+  }
 
 
 
@@ -68,6 +99,10 @@ function Eurocode({ beamFun }) {
 
   {simpleBending === true ?(
     <SimpleBeam simpleBendingFun={simpleBendingFun} titleRef={titleRef}/>
+  ): cantiliverBending === true ?(
+    <Cantiliver simpleBendingFun={cantiliverBendingFun} titleRef={titleRef}/>
+  ): simpleShear === true ?(
+    <SimpleBeamShear simpleBendingFun={simpleShearFun} />
   ):(
     <div style={{display: "flex",flexWrap: "wrap",alignItems:"center",justifyContent: "center"}}>
     <MDButton
@@ -81,7 +116,7 @@ function Eurocode({ beamFun }) {
     rel="noreferrer"
     variant="gradient"
     color={sidenavColor}
-    onClick={handleSimpleShow}
+    onClick={handleCantiliverShow}
     style={{marginLeft:5}}
     >Single-span(Cantiliver Beam)</MDButton>
 
@@ -94,7 +129,7 @@ function Eurocode({ beamFun }) {
     </div>
   )}
 
-
+{/* Simple Beam Modal*/}
   <Modal show={showSimple} onHide={handleSimpleClose}
   size='lg'
   >
@@ -119,6 +154,7 @@ function Eurocode({ beamFun }) {
   variant="gradient"
   color={sidenavColor}
   style={{width:180,marginLeft:10,marginTop:25}}
+  onClick={simpleShearFun}
   >SHEAR</MDButton>
   <MDButton
   rel="noreferrer"
@@ -135,6 +171,52 @@ function Eurocode({ beamFun }) {
   </Modal.Footer>
   </Card>
 </Modal>
+
+
+{/* Cantiliver Modal*/}
+<Modal show={showCantiliver} onHide={handleCantiliverClose}
+size='lg'
+>
+<Card>
+<Modal.Body>
+<center>
+<MDTypography style={{fontWeight:'bold',color:'#49a3f1'}}>
+  Cantiliver Beam
+</MDTypography>
+</center>
+<hr style={{color:'#fff'}}/>
+<div style={{display: "flex",flexWrap: "wrap",alignItems:"center",justifyContent: "center"}}>
+<MDButton
+rel="noreferrer"
+variant="gradient"
+color={sidenavColor}
+style={{width:180,marginLeft:10,marginTop:25}}
+onClick={cantiliverBendingFun}
+>BENDING</MDButton>
+<MDButton
+rel="noreferrer"
+variant="gradient"
+color={sidenavColor}
+style={{width:180,marginLeft:10,marginTop:25}}
+>SHEAR</MDButton>
+<MDButton
+rel="noreferrer"
+variant="gradient"
+color={sidenavColor}
+style={{width:180,marginLeft:10,marginTop:25}}
+>DEFLECTION</MDButton>
+</div>
+</Modal.Body>
+<Modal.Footer>
+  <Button variant="primary" onClick={handleCantiliverClose}>
+    Close
+  </Button>
+</Modal.Footer>
+</Card>
+</Modal>
+
+
+
 
   </Box>
   )
