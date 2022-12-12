@@ -15,20 +15,28 @@ import Menu from '@mui/material/Menu';
 import ClearIcon from '@mui/icons-material/Clear';
 import MDButton from '../../../../components1/MDButton';
 import { useMaterialUIController } from '../../../../context';
-import SimpleBeam from './Simple-beam';
-
+import SimpleBeam from './Simple-beam/Bending-reinforcrments';
+import Card from "@mui/material/Card";
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 function Eurocode({ beamFun }) {
   const [controller] = useMaterialUIController();
   const { sidenavColor } = controller;  
-  const [simple, setSimple] = useState(false)
+  const [simpleBending, setSimpleBending] = useState(false)
   const titleRef = useRef()
 
-  const simpleFun = () =>{
-    if(simple === false){
-      setSimple(true)
+  const [showSimple, setShowSimple] = useState(false);
+
+  const handleSimpleClose = () => setShowSimple(false);
+  const handleSimpleShow = () => setShowSimple(true);
+
+  const simpleBendingFun = () =>{
+    handleSimpleClose()
+    if(simpleBending === false){
+      setSimpleBending(true)
     }else{
-      setSimple(false)
+      setSimpleBending(false)
     }
   }
 
@@ -58,16 +66,24 @@ function Eurocode({ beamFun }) {
     </AppBar>
     <hr style={{marginTop:-15}}/>
 
-  {simple === true ?(
-    <SimpleBeam simpleFun={simpleFun} titleRef={titleRef}/>
+  {simpleBending === true ?(
+    <SimpleBeam simpleBendingFun={simpleBendingFun} titleRef={titleRef}/>
   ):(
     <div style={{display: "flex",flexWrap: "wrap",alignItems:"center",justifyContent: "center"}}>
     <MDButton
     rel="noreferrer"
     variant="gradient"
     color={sidenavColor}
-    onClick={simpleFun}
-    >Simple Beam</MDButton>
+    onClick={handleSimpleShow}
+    >Single-span(Simply supported Beam)</MDButton>
+
+    <MDButton
+    rel="noreferrer"
+    variant="gradient"
+    color={sidenavColor}
+    onClick={handleSimpleShow}
+    style={{marginLeft:5}}
+    >Single-span(Cantiliver Beam)</MDButton>
 
     <MDButton
     rel="noreferrer"
@@ -77,6 +93,48 @@ function Eurocode({ beamFun }) {
     >Continous Beam</MDButton>
     </div>
   )}
+
+
+  <Modal show={showSimple} onHide={handleSimpleClose}
+  size='lg'
+  >
+  <Card>
+  <Modal.Body>
+  <center>
+  <MDTypography style={{fontWeight:'bold',color:'#49a3f1'}}>
+    Simple Beam
+  </MDTypography>
+  </center>
+  <hr style={{color:'#fff'}}/>
+  <div style={{display: "flex",flexWrap: "wrap",alignItems:"center",justifyContent: "center"}}>
+  <MDButton
+  rel="noreferrer"
+  variant="gradient"
+  color={sidenavColor}
+  style={{width:180,marginLeft:10,marginTop:25}}
+  onClick={simpleBendingFun}
+  >BENDING</MDButton>
+  <MDButton
+  rel="noreferrer"
+  variant="gradient"
+  color={sidenavColor}
+  style={{width:180,marginLeft:10,marginTop:25}}
+  >SHEAR</MDButton>
+  <MDButton
+  rel="noreferrer"
+  variant="gradient"
+  color={sidenavColor}
+  style={{width:180,marginLeft:10,marginTop:25}}
+  >DEFLECTION</MDButton>
+  </div>
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="primary" onClick={handleSimpleClose}>
+      Close
+    </Button>
+  </Modal.Footer>
+  </Card>
+</Modal>
 
   </Box>
   )

@@ -14,10 +14,10 @@ import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import Card from "@mui/material/Card";
 import ClearIcon from '@mui/icons-material/Clear';
-import MDButton from '../../../../../components1/MDButton';
-import { useMaterialUIController } from '../../../../../context';
+import MDButton from '../../../../../../components1/MDButton';
+import { useMaterialUIController } from '../../../../../../context';
 import {  Modal } from 'react-bootstrap'
-import MDTypography from '../../../../../components1/MDTypography';
+import MDTypography from '../../../../../../components1/MDTypography';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import SwipeableViews from 'react-swipeable-views';
@@ -27,7 +27,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Rectangular from './Rectangular';
-import MDInput from '../../../../../components1/MDInput';
+import MDInput from '../../../../../../components1/MDInput';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import { ToastContainer, toast } from 'react-toastify';
@@ -66,7 +66,7 @@ function a11yProps(index) {
 }
 
 
-export default function SimpleBeam({ simpleFun }) {
+export default function SimpleBeam({ simpleBendingFun }) {
     const [controller] = useMaterialUIController();
     const { sidenavColor } = controller;  
     const [show, setShow] = useState(false);
@@ -90,7 +90,6 @@ export default function SimpleBeam({ simpleFun }) {
 
     const calculate1 = () => {
       setLoading(true)
-      setShowTable(true)
       if(!name){
         toast.error("Name your beam!")
         setLoading(false)
@@ -154,6 +153,8 @@ export default function SimpleBeam({ simpleFun }) {
         setD1(d1)
         setD2(d2)
         setLoading(false)
+        setShowTable(true)
+        handleClose()
       }
     }
 
@@ -174,40 +175,47 @@ export default function SimpleBeam({ simpleFun }) {
   return (
     <Card>
       <CssBaseline />
-      <List style={{
+      <div style={{
         height:'70vh',
-        overflowY:'auto'
+        overflowY:'auto',
       }}>
-        <center style={{display:'flex',flexWrap:'wrap',justifyContent:'center'}}>
-        <MDButton
-        rel="noreferrer"
-        variant="gradient"
-        color={sidenavColor}
-        onClick={handleShow}
-        style={{marginTop:3}}
-        >Select Concrete Member</MDButton>
-        <MDButton
-        rel="noreferrer"
-        variant="gradient"
-        color={sidenavColor}
-        style={{marginLeft:5, marginTop:3}}
-        >Select Steel Member</MDButton>
-        </center>  
+      <div
+      style={{
+        display:'flex',
+        justifyContent:'space-between'
+      }}
+      >
+      <div><ClearIcon fontSize='large' onClick={simpleBendingFun} style={{color:'#88888888',cursor:'pointer'}}/></div>
+      <div>
+      <center style={{flexWrap:'wrap'}}>
+      <MDButton
+      rel="noreferrer"
+      variant="gradient"
+      color={sidenavColor}
+      onClick={handleShow}
+      style={{marginTop:8}}
+      >Select Concrete Member</MDButton>
+      <MDButton
+      rel="noreferrer"
+      variant="gradient"
+      color={sidenavColor}
+      style={{marginLeft:5, marginTop:8}}
+      >Select Steel Member</MDButton>
+      </center> 
+      </div>
+      <div></div>    
+      </div>
+
+ 
         <center>
         {showTable === true ?(
-          <Rectangular d1={d1} d2={d2} fck={fck} fyk={fyk} hCrossSection={hCrossSection} bCrossSection={bCrossSection} memberLength={memberLength} name={name} link={link} cover={cover} dLoad={dLoad} />
+          <Rectangular d1={d1} d2={d2} fck={fck} fyk={fyk} hCrossSection={hCrossSection} bCrossSection={bCrossSection} memberLength={memberLength} name={name} link={link} cover={cover} dLoad={dLoad} mainBar={mainBar}/>
         ):(
         <span></span>
         )}
         </center>         
-      </List>
-      <Card sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
-        <BottomNavigation
-          showLabels
-        >
-          <BottomNavigationAction label="Simply Supported beam" icon={<ClearIcon fontSize='large' onClick={simpleFun}/>} />
-        </BottomNavigation>
-      </Card>
+      </div>
+
       <Modal show={show} onHide={handleClose}
       size="lg"
       style={{borderRadius:10}}
@@ -232,7 +240,12 @@ export default function SimpleBeam({ simpleFun }) {
        </AppBar>
          </div>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body
+      style={{
+        height:'65vh',
+        overflowY:'auto'
+      }}
+      >
       <SwipeableViews
       axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
       index={value}
@@ -324,19 +337,7 @@ export default function SimpleBeam({ simpleFun }) {
              />
               </Grid>
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={calculate1}
-            >
-            {loading === true ?(
-              <span>Calculating...</span>
-            ):(
-              <span>Calculate</span>
-            )}
-            </Button>
+
           </Box>
         </Box>
       </Container>      
@@ -348,6 +349,25 @@ export default function SimpleBeam({ simpleFun }) {
       </TabPanel>
     </SwipeableViews>
       </Modal.Body>
+      <Modal.Footer>
+
+      {value === 0 &&(
+        <MDButton
+        rel="noreferrer"
+        variant="gradient"
+        color={sidenavColor}
+        onClick={calculate1}
+        style={{marginTop:10}}
+        fullWidth
+        >
+        {loading === true ?(
+          <span>Calculating...</span>
+        ):(
+          <span>Calculate</span>
+        )}
+        </MDButton>
+      )}
+      </Modal.Footer>
       </Card>
     </Modal>
     </Card>
